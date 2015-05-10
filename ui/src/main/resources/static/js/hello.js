@@ -2,7 +2,22 @@
  *
  * Created by newton on 5/8/15.
  */
-angular.module('hello', [])
-    .controller('home', function($scope) {
-     $scope.greeting = {id: 'xxx', content: 'Hello World!'}
+angular.module('hello', [ 'ngRoute' ])
+    .config(function($routeProvider, $httpProvider) {
+
+        $routeProvider.when('/', {
+            templateUrl : 'home.html',
+            controller : 'home'
+        }).when('/login', {
+                templateUrl : 'login.html',
+                controller : 'navigation'
+            }).otherwise('/');
+
+        $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
     })
+    .controller('home', function($scope, $http) {
+        $http.get('/resource/').success(function(data) {
+            $scope.greeting = data;
+        })
+    })
+    .controller('navigation', function() {});
