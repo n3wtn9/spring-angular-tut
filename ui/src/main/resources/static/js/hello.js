@@ -11,9 +11,10 @@ angular.module('hello', [ 'ngRoute' ])
         }).when('/login', {
                 templateUrl : 'login.html',
                 controller : 'navigation'
-            }).otherwise('/');
+        }).otherwise('/');
 
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+
     })
     .controller('home', function($scope, $http) {
         $http.get('/resource/').success(function(data) {
@@ -25,7 +26,7 @@ angular.module('hello', [ 'ngRoute' ])
             var headers = credentials ? {authorization : "Basic "
                 + btoa(credentials.username + ":" + credentials.password)} : {};
 
-            $http.get('user', {headers : hearders}).success(function(data) {
+            $http.get('user', {headers : headers}).success(function(data) {
                 if (data.name) {
                     $rootScope.authenticated = true;
                 } else {
@@ -34,6 +35,7 @@ angular.module('hello', [ 'ngRoute' ])
                 callback && callback();
             }).error(function(){
                     $rootScope.authenticated = false;
+                    callback && callback();
             });
         }
 
@@ -42,7 +44,7 @@ angular.module('hello', [ 'ngRoute' ])
         $scope.login = function() {
             authenticate($scope.credentials, function() {
                 if ($rootScope.authenticated) {
-                    location.path("/");
+                    $location.path("/");
                     $scope.error = false;
                 } else {
                     $location.path("/login");
